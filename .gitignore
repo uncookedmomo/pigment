@@ -1,8 +1,74 @@
-# Node
-*.log
-*.log.*
-node_modules
+# 🔒 ENV & Secrets
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.crt
+*.p12
+*.cert
+*.secret
+secrets/
+config/keys/
+config/private/
 
-out/
+# ⚙️ Node & build tools
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.vscode/
+.idea/
 dist/
-code.js
+build/
+out/
+.cache/
+.temp/
+tmp/
+.DS_Store
+*.log
+
+# 🧩 Figma plugin artifacts
+manifest-temp.json
+*.figplug.json
+*.figma-plugin
+*.bundle.js
+*.bundle.map
+
+# 🚀 Dependencies or auto-gen files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+coverage/
+storybook-static/
+*.bak
+*.swp
+
+# 🧰 OS files
+Thumbs.db
+Desktop.ini
+Icon?
+._*
+
+# 📦 Replit / Vercel / Netlify etc.
+.replit
+.vercel
+.netlify
+.vscode/settings.json
+*.local
+
+# 💾 Backups & misc
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.tmp
+
+# 🧠 Ignore local testing data
+test-data/
+debug/
+local-dev/
+sandbox/
+__pycache__/
