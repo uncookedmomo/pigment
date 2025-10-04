@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Color Palette Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #111111;
+      color: #333333;
+      padding: 0;
+      margin: 0;
+      width: 420px;
+      height: 560px;
+      overflow: hidden;
+    }
+
+    .container {
+      background: #2c2c2c;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(45deg, #92DEFF 0%, #FFF389 25%, #FF9DE9 50%, #CFA8FF 75%);
+      border-radius: 4px;
+      margin-right: 8px;
+    }
+
+    .title {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+      gap: 8px;
+      margin: 0 auto 16px auto;
+      padding: 0;
+      width: 360px;
+      height: 360px;
+      overflow: hidden;
+      align-items: stretch;
+      justify-items: stretch;
+    }
+
+    .color-card {
+      border-radius: 8px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      min-height: 60px;
+      box-sizing: border-box;
+    }
+
+    .color-card:hover {
+      transform: scale(1.02);
+    }
+
+    .color-name {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      transition: color 0.2s;
+    }
+
+    .hex-code {
+      font-size: 14px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: color 0.2s;
+    }
+
+    .copy-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .copy-btn:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .copy-icon {
+      width: 18px;
+      height: 18px;
+      background: currentColor;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2' ry='2'%3E%3C/rect%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'%3E%3C/path%3E%3C/svg%3E") no-repeat center;
+      mask-size: contain;
+    }
+
+    .refresh-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.8;
+      transition: all 0.2s;
+      backdrop-filter: blur(4px);
+    }
+
+    .refresh-btn:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .refresh-icon {
+      width: 20px;
+      height: 20px;
+      background: currentColor;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8'%3E%3C/path%3E%3Cpath d='M21 3v5h-5'%3E%3C/path%3E%3Cpath d='M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16'%3E%3C/path%3E%3Cpath d='M3 21v-5h5'%3E%3C/path%3E%3C/svg%3E") no-repeat center;
+      mask-size: contain;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 8px;
+      margin: 0 auto;
+      width: 360px;
+      padding: 0;
+    }
+
+    .btn {
+      flex: 1;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+      font-weight: 500;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: #007AFF;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: #0056CC;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: #333333;
+      border: 1px solid #e0e0e0;
+    }
+
+    .btn-secondary:hover {
+      background: #f8f8f8;
+      transform: translateY(-1px);
+    }
+
+    .btn-icon {
+      width: 16px;
+      height: 16px;
+      background: currentColor;
+    }
+
+    .generate-icon {
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8'%3E%3C/path%3E%3Cpath d='M21 3v5h-5'%3E%3C/path%3E%3Cpath d='M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16'%3E%3C/path%3E%3Cpath d='M3 21v-5h5'%3E%3C/path%3E%3C/svg%3E") no-repeat center;
+      mask-size: contain;
+    }
+
+    .import-icon {
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='17,8 12,3 7,8'%3E%3C/polyline%3E%3Cline x1='12' y1='3' x2='12' y2='15'%3E%3C/line%3E%3C/svg%3E") no-repeat center;
+      mask-size: contain;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333333;
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="icon"></div>
+      <div class="title">Pigment</div>
+    </div>
+
+    <div class="bento-grid" id="bentoGrid">
+      <!-- Color cards will be generated here -->
+    </div>
+
+    <div class="button-container">
+      <button class="btn btn-primary" id="generateBtn">
+        <div class="btn-icon generate-icon"></div>
+        Generate
+      </button>
+      <button class="btn btn-secondary" id="importBtn">
+        <div class="btn-icon import-icon"></div>
+        Import
+      </button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+    // Color palette data
+    let currentPalette = [
+      { name: "Biloba Flower", hex: "#CFA8FF", rgb: { r: 0.81, g: 0.66, b: 1.0 } },
+      { name: "Sulu Green", hex: "#C6FF8D", rgb: { r: 0.78, g: 1.0, b: 0.55 } },
+      { name: "Pale Canary", hex: "#FFF389", rgb: { r: 1.0, g: 0.95, b: 0.54 } },
+      { name: "Lavender Rose", hex: "#FF9DE9", rgb: { r: 1.0, g: 0.62, b: 0.91 } },
+      { name: "Sky Blue", hex: "#92DEFF", rgb: { r: 0.57, g: 0.87, b: 1.0 } }
+    ];
+
+    // Color name database
+    const colorNames = [
+      "Biloba Flower", "Sulu Green", "Pale Canary", "Lavender Rose", "Sky Blue",
+      "Coral Pink", "Mint Green", "Lavender", "Peach", "Turquoise",
+      "Rose Gold", "Sage Green", "Butter Yellow", "Powder Blue", "Coral",
+      "Emerald", "Sunset Orange", "Periwinkle", "Dusty Rose", "Seafoam",
+      "Goldenrod", "Plum", "Aqua", "Salmon", "Lime"
+    ];
+
+    // Generate random color
+    function generateRandomColor() {
+      const hue = Math.floor(Math.random() * 360);
+      const saturation = Math.floor(Math.random() * 40) + 40; // 40-80%
+      const lightness = Math.floor(Math.random() * 30) + 60; // 60-90%
+      
+      const hsl = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+      const hex = hslToHex(hue, saturation, lightness);
+      const rgb = hexToRgb(hex);
+      
+      return {
+        hex: hex,
+        rgb: rgb,
+        name: colorNames[Math.floor(Math.random() * colorNames.length)]
+      };
+    }
+
+    // Convert HSL to Hex
+    function hslToHex(h, s, l) {
+      l /= 100;
+      const a = s * Math.min(l, 1 - l) / 100;
+      const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');
+      };
+      return `#${f(0)}${f(8)}${f(4)}`;
+    }
+
+    // Convert Hex to RGB
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16) / 255,
+        g: parseInt(result[2], 16) / 255,
+        b: parseInt(result[3], 16) / 255
+      } : null;
+    }
+
+    // Generate new palette
+    function generateNewPalette() {
+      currentPalette = [];
+      for (let i = 0; i < 5; i++) {
+        currentPalette.push(generateRandomColor());
+      }
+      renderPalette();
+    }
+
+    // Generate single color
+    function generateSingleColor(index) {
+      currentPalette[index] = generateRandomColor();
+      renderPalette();
+    }
+
+    // Calculate luminance for contrast
+    function getLuminance(r, g, b) {
+      const [rs, gs, bs] = [r, g, b].map(c => {
+        c = c / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+    }
+
+    // Get contrast ratio between two colors
+    function getContrastRatio(color1, color2) {
+      const lum1 = getLuminance(color1.r, color1.g, color1.b);
+      const lum2 = getLuminance(color2.r, color2.g, color2.b);
+      const brightest = Math.max(lum1, lum2);
+      const darkest = Math.min(lum1, lum2);
+      return (brightest + 0.05) / (darkest + 0.05);
+    }
+
+    // Get text color based on background color
+    function getTextColor(hexColor) {
+      const hex = hexColor.replace('#', '');
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      
+      const white = { r: 255, g: 255, b: 255 };
+      const black = { r: 0, g: 0, b: 0 };
+      
+      const whiteContrast = getContrastRatio({ r, g, b }, white);
+      const blackContrast = getContrastRatio({ r, g, b }, black);
+      
+      return whiteContrast > blackContrast ? '#ffffff' : '#000000';
+    }
+
+    // Generate random bento grid layout with proper square/rectangle shapes
+    function generateRandomLayout() {
+      const layouts = [
+        // Layout 1: Large square top-left + small squares
+        [
+          { gridColumn: '1 / 3', gridRow: '1 / 3' }, // Large square (2x2)
+          { gridColumn: '3', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '3', gridRow: '2' },         // Small square (1x1)
+          { gridColumn: '1', gridRow: '3' },         // Small square (1x1)
+          { gridColumn: '2', gridRow: '3' }          // Small square (1x1)
+        ],
+        // Layout 2: Large rectangle center + small squares
+        [
+          { gridColumn: '1', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '2 / 4', gridRow: '1 / 3' }, // Large rectangle (2x2)
+          { gridColumn: '1', gridRow: '2' },         // Small square (1x1)
+          { gridColumn: '1', gridRow: '3' },         // Small square (1x1)
+          { gridColumn: '3', gridRow: '2 / 4' }      // Medium rectangle (1x2)
+        ],
+        // Layout 3: Large square bottom-right + small squares
+        [
+          { gridColumn: '1', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '2', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '3', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '1 / 3', gridRow: '2 / 4' }, // Large rectangle (2x2)
+          { gridColumn: '3', gridRow: '2 / 4' }      // Medium rectangle (1x2)
+        ],
+        // Layout 4: Large square top-right + small squares
+        [
+          { gridColumn: '1', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '2 / 4', gridRow: '1 / 3' }, // Large rectangle (2x2)
+          { gridColumn: '1', gridRow: '2' },         // Small square (1x1)
+          { gridColumn: '1', gridRow: '3' },         // Small square (1x1)
+          { gridColumn: '3', gridRow: '2 / 4' }      // Medium rectangle (1x2)
+        ],
+        // Layout 5: Large square bottom-left + small squares
+        [
+          { gridColumn: '1', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '2', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '3', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '1 / 3', gridRow: '2 / 4' }, // Large rectangle (2x2)
+          { gridColumn: '3', gridRow: '2 / 4' }      // Medium rectangle (1x2)
+        ],
+        // Layout 6: Two large rectangles
+        [
+          { gridColumn: '1 / 3', gridRow: '1 / 3' }, // Large square (2x2)
+          { gridColumn: '3', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '3', gridRow: '2' },         // Small square (1x1)
+          { gridColumn: '2 / 4', gridRow: '2 / 4' }, // Large rectangle (2x2)
+          { gridColumn: '1', gridRow: '3' }          // Small square (1x1)
+        ],
+        // Layout 7: Large rectangle center + scattered small squares
+        [
+          { gridColumn: '1', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '2 / 4', gridRow: '1 / 3' }, // Large rectangle (2x2)
+          { gridColumn: '1', gridRow: '2' },         // Small square (1x1)
+          { gridColumn: '1', gridRow: '3' },         // Small square (1x1)
+          { gridColumn: '3', gridRow: '2 / 4' }      // Medium rectangle (1x2)
+        ],
+        // Layout 8: All small squares
+        [
+          { gridColumn: '1', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '2', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '3', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '1', gridRow: '2' },         // Small square (1x1)
+          { gridColumn: '2', gridRow: '2' }          // Small square (1x1)
+        ],
+        // Layout 9: Large rectangle left column + small squares
+        [
+          { gridColumn: '1', gridRow: '1 / 3' },     // Large rectangle (1x2)
+          { gridColumn: '2', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '3', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '2', gridRow: '2' },         // Small square (1x1)
+          { gridColumn: '3', gridRow: '2' }          // Small square (1x1)
+        ],
+        // Layout 10: Large rectangle right column + small squares
+        [
+          { gridColumn: '1', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '2', gridRow: '1' },         // Small square (1x1)
+          { gridColumn: '3', gridRow: '1 / 3' },     // Large rectangle (1x2)
+          { gridColumn: '1', gridRow: '2' },         // Small square (1x1)
+          { gridColumn: '2', gridRow: '2' }          // Small square (1x1)
+        ]
+      ];
+
+      return layouts[Math.floor(Math.random() * layouts.length)];
+    }
+
+    // Render palette
+    function renderPalette() {
+      const grid = document.getElementById('bentoGrid');
+      grid.innerHTML = '';
+
+      // Generate random layout
+      const layout = generateRandomLayout();
+
+      currentPalette.forEach((color, index) => {
+        const card = document.createElement('div');
+        card.className = 'color-card';
+        card.style.backgroundColor = color.hex;
+        
+        // Apply grid positioning
+        const gridPos = layout[index];
+        card.style.gridColumn = gridPos.gridColumn;
+        card.style.gridRow = gridPos.gridRow;
+
+        // Get appropriate text color based on contrast
+        const textColor = getTextColor(color.hex);
+
+        card.innerHTML = `
+          <button class="refresh-btn" onclick="generateSingleColor(${index})" style="color: ${textColor}">
+            <div class="refresh-icon"></div>
+          </button>
+          <div class="color-name" style="color: ${textColor}">${color.name}</div>
+          <div class="hex-code" style="color: ${textColor}">
+            <span>${color.hex}</span>
+            <button class="copy-btn" onclick="copyToClipboard('${color.hex}')" style="color: ${textColor}">
+              <div class="copy-icon"></div>
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Copy to clipboard
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Copied to clipboard!');
+      }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showToast('Copied to clipboard!');
+      });
+    }
+
+    // Show toast notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // Create color rectangles in Figma
+    function createColorRectangles() {
+      const colors = currentPalette.map(color => ({
+        hex: color.hex,
+        rgb: color.rgb,
+        name: color.name
+      }));
+
+      parent.postMessage({ 
+        pluginMessage: { 
+          type: 'create-palette', 
+          colors: colors 
+        } 
+      }, '*');
+    }
+
+    // Import palette as Figma styles
+    function importPaletteAsStyles() {
+      const colors = currentPalette.map(color => ({
+        hex: color.hex,
+        rgb: color.rgb,
+        name: color.name
+      }));
+
+      parent.postMessage({ 
+        pluginMessage: { 
+          type: 'export-styles', 
+          colors: colors 
+        } 
+      }, '*');
+    }
+
+    // Event listeners
+    document.getElementById('generateBtn').addEventListener('click', generateNewPalette);
+    document.getElementById('importBtn').addEventListener('click', importPaletteAsStyles);
+
+    // Initialize
+    renderPalette();
+</script>
+</body>
+</html>
